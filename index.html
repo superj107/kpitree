@@ -49,10 +49,22 @@ tbody tr{cursor:pointer}
 .fallback{font-size:.85rem;color:var(--muted);background:var(--zone);border-radius:8px;padding:12px}
 .fallback a{color:var(--accent);font-weight:500}
 .hint{font-size:.85rem;color:var(--muted);margin:0}
+.go{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:0 0 18px}
+.go.bottom{margin:28px 0 0}
+.go a.btn{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:var(--bg);text-decoration:none;font-weight:700;padding:9px 16px;border-radius:8px}
+.go a.btn:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.go a.sub2{color:var(--accent);font-weight:500}
+.go .info{font-size:.85rem;color:var(--muted);min-width:0}
+.go code{font-family:var(--mono);color:var(--fg)}
 </style>
 
 <div class="wrap">
   <h1>中和復興國小 校園樹木量測分組</h1>
+  <div class="go">
+    <a class="btn" href="https://edutreemap.moe.edu.tw/school_survey/" target="_blank" rel="noopener">前往填報：校園樹木觀察紀錄平臺 ↗</a>
+    <a class="sub2" href="https://edutreemap.moe.edu.tw/trees/#/Map?campusCode=014634" target="_blank" rel="noopener">平臺上的復興國小樹木地圖 ↗</a>
+    <span class="info">登入時輸入復興國小學校代碼 <code>014634</code>與工作人員共用帳號；量完一棵即填報送出。</span>
+  </div>
   <p class="sub">資料來源：教育部校園樹木資訊平臺（市立復興國小，共 262 個樹點）。分區依場勘難度圖；灰色區 11 棵不量測，實際量測 251 棵，分給 9 組志工。量測日期：115.11.20（五）。</p>
   <p class="note" id="note"></p>
   <div class="grid">
@@ -68,6 +80,11 @@ tbody tr{cursor:pointer}
       </table></div>
       <div class="trees" id="trees"></div>
     </div>
+  </div>
+  <div class="go bottom">
+    <a class="btn" href="https://edutreemap.moe.edu.tw/school_survey/" target="_blank" rel="noopener">前往填報：校園樹木觀察紀錄平臺 ↗</a>
+    <a class="sub2" href="https://edutreemap.moe.edu.tw/trees/#/Map?campusCode=014634" target="_blank" rel="noopener">平臺上的復興國小樹木地圖 ↗</a>
+    <span class="info">登入時輸入復興國小學校代碼 <code>014634</code>與工作人員共用帳號；量完一棵即填報送出。</span>
   </div>
 </div>
 
@@ -91,7 +108,7 @@ function showCard(){
   const d=D.find(x=>x[0]===pick);
   if(!d){card.innerHTML='<p class="hint">點地圖上的圓點，可看這棵樹的樹種、組別和照片。</p>';return}
   const g=d[plan==="A"?6:7],urls=PH(d[0]);
-  card.innerHTML=`<h3>${d[1]}</h3><div class="meta"><b>${g?"第 "+g+" 組":"不量測"}</b>　${ZN[d[3]]}　${d[2]}型　平臺編號 ${d[0]}</div><div class="photos" id="photos"></div>`;
+  card.innerHTML=`<h3>${d[1]}</h3><div class="meta"><b>${g?"第 "+g+" 組":"不量測"}</b>　${ZN[d[3]]}　${d[2]}型　平臺編號 ${d[0]}　<a href="https://edutreemap.moe.edu.tw/trees/#/Map?no=${d[0]}" target="_blank" rel="noopener" style="color:var(--accent)">在平臺查看這棵樹 ↗</a></div><div class="photos" id="photos"></div>`;
   const box=document.getElementById("photos");let failed=0;
   urls.forEach((u,i)=>{const a=document.createElement("a");a.href=u;a.target="_blank";a.rel="noopener";
     const im=new Image();im.alt=d[1]+" 照片 "+(i+1);im.loading="lazy";im.src=u;
