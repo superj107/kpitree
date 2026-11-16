@@ -21,7 +21,9 @@ h1{font-size:1.4rem;margin:0 0 10px;text-wrap:balance}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
 .panel h2{font-size:.78rem;letter-spacing:.06em;color:var(--muted);font-weight:500;margin:0 0 10px}
 .chips{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-.chip{font:inherit;font-weight:700;font-size:.95rem;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 4px;border-radius:9px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer;white-space:nowrap}
+.chip{font:inherit;font-weight:700;font-size:.95rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1.25;padding:6px 4px;border-radius:9px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer;white-space:nowrap}
+.chip .lb{display:flex;align-items:center;gap:6px}
+.chip .pg{font-family:var(--mono);font-size:.72rem;font-weight:500;opacity:.8}
 .chip .dot{width:10px;height:10px;border-radius:50%;flex:none}
 .chip[aria-pressed="true"]{border-color:var(--c);background:var(--c);color:#fff}
 .chip[aria-pressed="true"] .dot{background:#fff!important}
@@ -34,6 +36,28 @@ h1{font-size:1.4rem;margin:0 0 10px;text-wrap:balance}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
 .tags span{font-size:.8rem;background:var(--zone);border-radius:999px;padding:2px 10px}
 .hint{font-size:.85rem;color:var(--muted);margin:0}
+.bar{height:8px;border-radius:999px;background:var(--zone);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--c,var(--accent));border-radius:999px}
+.prog{display:flex;justify-content:space-between;align-items:baseline;font-size:.85rem}
+.prog b{font-family:var(--mono);font-size:1rem}
+.trees{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:2px;max-height:min(52vh,560px);overflow:auto;border-top:1px solid var(--line);padding-top:6px}
+.trees li{display:grid;grid-template-columns:2em minmax(0,1fr) auto;align-items:center;gap:8px;padding:5px 4px;border-radius:8px}
+.trees li.next{background:var(--zone);outline:1.5px solid var(--c)}
+.trees li.on{background:var(--zone)}
+.trees .ix{font-family:var(--mono);font-size:.8rem;color:var(--muted);text-align:right}
+.trees .tb{font:inherit;text-align:left;background:none;border:0;color:var(--fg);cursor:pointer;padding:0;min-width:0;display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline}
+.trees .no{font-family:var(--mono);font-weight:500}
+.trees .sp{font-size:.88rem}
+.trees .sz{font-size:.75rem;color:var(--muted)}
+.trees li.done .no,.trees li.done .sp{color:var(--muted);text-decoration:line-through}
+.ck{font:inherit;font-size:.8rem;font-weight:700;min-width:4.6em;padding:6px 8px;border-radius:8px;border:1.5px solid var(--c);background:var(--surface);color:var(--c);cursor:pointer}
+.ck[aria-pressed="true"]{background:var(--c);color:#fff}
+.ck:focus-visible,.trees .tb:focus-visible,.lnk:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.foot{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:.8rem;color:var(--muted)}
+.lnk{font:inherit;font-size:.8rem;background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer}
+.lnk.warn{color:var(--hi)}
+.pop .acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pop .ord{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
 .mapbox{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px;overflow:hidden}
 .mapbox svg{width:100%;height:auto;max-height:calc(100vh - 120px);display:block;cursor:pointer;touch-action:manipulation}
 .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.78rem;color:var(--muted);padding:6px 6px 2px}
@@ -51,6 +75,7 @@ h1{font-size:1.4rem;margin:0 0 10px;text-wrap:balance}
 .pop.sheet{left:8px!important;right:8px;width:auto;max-width:none;top:auto!important;bottom:8px}
 .panel{min-width:0}
 @media (max-width:860px){
+  .trees{max-height:none}
   .grid{grid-template-columns:minmax(0,1fr);gap:12px}
   .side{display:contents}
   #chipsPanel{order:-1;position:sticky;top:env(safe-area-inset-top,0px);z-index:6;padding:8px 10px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
@@ -73,9 +98,9 @@ h1{font-size:1.4rem;margin:0 0 10px;text-wrap:balance}
   <div class="go">
     <a class="btn" href="https://edutreemap.moe.edu.tw/school_survey/" target="_blank" rel="noopener">前往填報：校園樹木觀察紀錄平臺 ↗</a>
     <a class="sub2" href="https://edutreemap.moe.edu.tw/trees/#/Map?campusCode=014634" target="_blank" rel="noopener">平臺上的復興國小樹木地圖 ↗</a>
-    <span class="info">登入時輸入復興國小學校代碼 <code>014634</code>與工作人員共用帳號；量完一棵即填報送出。</span>
+    <span class="info">登入：學校代碼 <code>014634</code>、學生帳號 <code>CHT-1</code>（全部人共用同一組）；量完一棵即填報送出。<br>同一組請固定用同一支手機，在本頁按「量完」記錄是否已量測（紀錄只存在該手機）。</span>
   </div>
-  <p class="sub">共 262 個樹點，灰色 11 棵不量測，實際量測 251 棵，分給 9 組。量測日期：115.11.20（五）。資料來源：教育部校園樹木資訊平臺。</p>
+  <p class="sub">共 262 個樹點，灰色 11 棵不量測，實際量測 251 棵，分給 9 組。量測日期：115.11.18（三）。資料來源：教育部校園樹木資訊平臺。</p>
   <div class="grid">
     <div class="mapbox" id="mapbox">
       <svg id="svg" viewBox="-40 -230 1060 1340" role="img" aria-label="各組量測樹點分布圖"></svg>
@@ -93,7 +118,7 @@ h1{font-size:1.4rem;margin:0 0 10px;text-wrap:balance}
   <div class="go bottom">
     <a class="btn" href="https://edutreemap.moe.edu.tw/school_survey/" target="_blank" rel="noopener">前往填報：校園樹木觀察紀錄平臺 ↗</a>
     <a class="sub2" href="https://edutreemap.moe.edu.tw/trees/#/Map?campusCode=014634" target="_blank" rel="noopener">平臺上的復興國小樹木地圖 ↗</a>
-    <span class="info">登入時輸入復興國小學校代碼 <code>014634</code>與工作人員共用帳號；量完一棵即填報送出。</span>
+    <span class="info">登入：學校代碼 <code>014634</code>、學生帳號 <code>CHT-1</code>（全部人共用同一組）；量完一棵即填報送出。<br>同一組請固定用同一支手機，在本頁按「量完」記錄是否已量測（紀錄只存在該手機）。</span>
   </div>
 </div>
 <script>
@@ -108,6 +133,14 @@ const PH=no=>Array.from({length:NPH[no]||1},(_,i)=>`https://edutreemap.moe.edu.t
 const ZN={D1:"南區",D2:"中區",D2E:"東側",D3:"北區",G:"不量測區"};
 const FULL=[-40,-230,1060,1340];
 const GI=7;
+const ORD={"1":[772258,772261,772319,772321,772372,772369,772362,772234,772221,772225,772227,772229,772237,772240,772244,772247,772242,772380,772252,773705],"2":[772556,772564,772531,772513,772472,772440,772422,772414,772410,772404,772212,772219,772224,772349,772346,772337,772377,772331,772316,772302,772306],"3":[772664,772581,772575,772567,772583,772611,772658,772510,772497,772504,772492,772678,772683,772696,772700,772709,772687,772481,772434,772446],"4":[772824,772834,772838,772837,772855,772816,772821,772819,772815,772844,772832,772850,772849,772813,772852,772854,772812,772793,772788,772784,772705,772810],"5":[772862,772859,772863,772864,772868,772870,772872,772873,772874,772875,772878,772877,772879,772876,772881,772883,772882,772884,772886,772885,772887,772888,772912,772914,772913,772907,772908,772906,772910,772911,773230],"6":[773210,772903,772904,772902,773234,773219,772905,772909,773375,773374,773369,773372,773346,773345,773347,773348,773353,773354,773350,773349,773356,773355,773359,773384,773383,773381,773382,773380,773379,773378,773376],"7":[773385,773386,773569,773567,773565,773588,773579,773574,773387,773388,773389,773391,773392,773396,773536,773395,773533,773448,773442,773440,773455,773458,773563,773469,773342,773341,773343,773340,773344,773361,773360,773358,773357],"8":[773664,773667,773669,773676,773673,773685,773690,773687,773683,773695,773696,773661,773658,773653,773650,773648,773644,773647,773414,773411,773406,773400,773402,773419,773423,773434,773429,773403,773398,773399,773438,773462,773550,773545],"9":[773317,773319,773318,773320,773322,773328,773327,773326,773329,773324,773325,773313,773315,773312,773309,773303,773306,773307,773308,773304,773305,773302,773300,773297,773292,773291,773289,773279,773278,773284,773275,773268,773265,773259,773261,773339,773338,773274,773335]};
+const IX={};for(const g in ORD)ORD[g].forEach((no,i)=>IX[no]=i+1);
+const KEY="kpitree-done-v1";
+let done=new Set(),confirmReset=false;
+try{done=new Set(JSON.parse(localStorage.getItem(KEY)||"[]"))}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify([...done]))}catch(e){}}
+function cnt(g){return ORD[g].filter(n=>done.has(n)).length}
+function toggle(no){done.has(no)?done.delete(no):done.add(no);save();draw();chips();detail();const d=D.find(x=>x[0]===pick);if(d&&!pop.hidden)showPop(d)}
 let sel=0,pick=null,vb=FULL.slice();
 const svg=document.getElementById("svg"),box=document.getElementById("mapbox"),pop=document.getElementById("pop"),NS="http://www.w3.org/2000/svg";
 function el(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e}
@@ -121,30 +154,45 @@ function draw(){
   const k=Math.max(.55,Math.sqrt(vb[2]/FULL[2]));
   svg.innerHTML=BASE;
   for(let q=1;q<=9;q++)svg.appendChild(el("path",{d:HULL[q],fill:sel===q?"#e63946":"none","fill-opacity":.07,stroke:sel===q?"#e63946":"#b9b1a0","stroke-width":(sel===q?4:1.6)*k,"stroke-dasharray":sel===q?"":`${6*k} ${5*k}`}));
-  D.forEach(d=>{const g=d[GI];svg.appendChild(el("circle",{cx:d[4],cy:d[5],r:R[d[2]]*k,fill:g?COL[g-1]:"#a9b0a6","fill-opacity":(sel&&g!==sel)?.28:.95,stroke:"#fff","stroke-width":.9*k}))});
+  if(sel){const P=ORD[sel].map(n=>D.find(d=>d[0]===n));svg.appendChild(el("polyline",{points:P.map(d=>d[4]+","+d[5]).join(" "),fill:"none",stroke:COL[sel-1],"stroke-width":1.6*k,"stroke-opacity":.55,"stroke-dasharray":`${4*k} ${3*k}`}))}
+  D.forEach(d=>{const g=d[GI],dn=done.has(d[0]),fade=sel&&g!==sel;const c=g?COL[g-1]:"#a9b0a6";
+    svg.appendChild(el("circle",{cx:d[4],cy:d[5],r:R[d[2]]*k,fill:dn?"#ffffff":c,"fill-opacity":fade?.28:.95,stroke:dn?c:"#fff","stroke-width":(dn?2.2:.9)*k,"stroke-opacity":fade?.35:1}))});
+  if(sel)ORD[sel].forEach((n,i)=>{const d=D.find(x=>x[0]===n);const tx=el("text",{x:d[4]+R[d[2]]*k+2*k,y:d[5]-R[d[2]]*k+2*k,"font-size":11*k,"font-weight":700,fill:done.has(n)?"#8a9187":COL[sel-1],stroke:"#fff","stroke-width":3*k,"paint-order":"stroke","font-family":"IBM Plex Mono,monospace"});tx.textContent=i+1;svg.appendChild(tx)});
   const pd=D.find(x=>x[0]===pick);
   if(pd)svg.appendChild(el("circle",{cx:pd[4],cy:pd[5],r:R[pd[2]]*k+5*k,fill:"none",stroke:"#1f2a1f","stroke-width":2.6*k}));
-  for(let g=1;g<=9;g++){if(sel&&g!==sel)continue;const p=D.filter(d=>d[GI]===g);const lab=g===9&&!sel?[430,700]:[p.reduce((a,d)=>a+d[4],0)/p.length,p.reduce((a,d)=>a+d[5],0)/p.length];
+  for(let g=1;g<=9;g++){if(sel)continue;const p=D.filter(d=>d[GI]===g);const lab=g===9&&!sel?[430,700]:[p.reduce((a,d)=>a+d[4],0)/p.length,p.reduce((a,d)=>a+d[5],0)/p.length];
     const t=el("text",{x:lab[0],y:lab[1]+9*k,"text-anchor":"middle","font-size":26*k,"font-weight":700,fill:COL[g-1],stroke:"#fff","stroke-width":5*k,"paint-order":"stroke","font-family":"Noto Sans TC,sans-serif"});t.textContent=g;svg.appendChild(t)}
 }
 function chips(){
   const c=document.getElementById("chips");c.innerHTML="";
   const mk=(g,label)=>{const b=document.createElement("button");b.className="chip";b.type="button";b.setAttribute("aria-pressed",String(sel===g));
-    b.style.setProperty("--c",g?COL[g-1]:"var(--accent)");b.innerHTML=(g?`<span class="dot" style="background:${COL[g-1]}"></span>`:"")+label;
+    b.style.setProperty("--c",g?COL[g-1]:"var(--accent)");const tot=g?ORD[g].length:Object.values(ORD).reduce((a,o)=>a+o.length,0),dn=g?cnt(g):Object.keys(ORD).reduce((a,x)=>a+cnt(x),0);
+    b.innerHTML=`<span class="lb">${g?`<span class="dot" style="background:${COL[g-1]}"></span>`:""}${label}</span><span class="pg">${dn}/${tot}</span>`;
     b.onclick=()=>{setSel(sel===g?0:g)};c.appendChild(b)};
   mk(0,"全部");for(let g=1;g<=9;g++)mk(g,g+" 組");
 }
 function detail(){
   const el2=document.getElementById("detail");
-  if(!sel){el2.style.removeProperty("--c");el2.innerHTML=`<p class="hint">點上方組別，地圖會放大到該組範圍，並顯示負責區域與樹種。<br>點地圖上的樹點，照片會直接出現在樹旁。</p>`;return}
+  if(!sel){el2.style.removeProperty("--c");const all=Object.values(ORD).reduce((a,o)=>a+o.length,0),dn=Object.keys(ORD).reduce((a,x)=>a+cnt(x),0);
+    el2.innerHTML=`<p class="hint">點上方組別，地圖會放大到該組範圍，列出該組的樹號清單與建議行走順序。<br>點地圖上的樹點，照片會直接出現在樹旁。</p>
+    <div class="prog"><span>這支手機已勾選</span><b>${dn} / ${all}</b></div><div class="bar"><i style="width:${all?dn/all*100:0}%"></i></div>`;return}
   const p=D.filter(d=>d[GI]===sel),c={};p.forEach(d=>c[d[1]||"未知樹種"]=(c[d[1]||"未知樹種"]||0)+1);
-  const n=s=>p.filter(d=>d[2]===s).length;
+  const n=s=>p.filter(d=>d[2]===s).length,dn=cnt(sel),tot=ORD[sel].length,nx=ORD[sel].find(x=>!done.has(x));
   el2.style.setProperty("--c",COL[sel-1]);
   el2.innerHTML=`<div class="gt"><b>第 ${sel} 組</b><span class="area">${AREA[sel]}</span></div>
   <div class="cnt">${p.length} 棵｜大 ${n("大")}・中 ${n("中")}・小 ${n("小")}</div>
-  <div class="tags">${Object.entries(c).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span>${k} ${v}</span>`).join("")}</div>`;
+  <div class="tags">${Object.entries(c).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span>${k} ${v}</span>`).join("")}</div>
+  <div class="prog"><span>${dn===tot?"本組全部量完 ✓":"已量"}</span><b>${dn} / ${tot}</b></div><div class="bar"><i style="width:${dn/tot*100}%"></i></div>
+  <ol class="trees" aria-label="第 ${sel} 組樹木清單（建議行走順序）">${ORD[sel].map((no,i)=>{const d=D.find(x=>x[0]===no),on=done.has(no);
+    return `<li class="${on?"done":""}${no===nx?" next":""}${no===pick?" on":""}"><span class="ix">${i+1}</span>
+    <button class="tb" type="button" data-show="${no}"><span class="no">${no}</span><span class="sp">${d[1]||"未知樹種"}</span><span class="sz">${d[2]}型</span></button>
+    <button class="ck" type="button" data-ck="${no}" aria-pressed="${on}">${on?"已量 ✓":"量完"}</button></li>`}).join("")}</ol>
+  <div class="foot"><span>勾選紀錄只存在這支手機的瀏覽器。</span>${dn?(confirmReset?`<span>確定清除本組 ${dn} 筆？</span><button class="lnk warn" type="button" data-reset="yes">清除</button><button class="lnk" type="button" data-reset="no">取消</button>`:`<button class="lnk" type="button" data-reset="ask">清除本組勾選</button>`):""}</div>`;
+  el2.querySelectorAll("[data-ck]").forEach(b=>b.onclick=()=>toggle(+b.dataset.ck));
+  el2.querySelectorAll("[data-show]").forEach(b=>b.onclick=()=>{const d=D.find(x=>x[0]===+b.dataset.show);pick=d[0];draw();detail();showPop(d)});
+  el2.querySelectorAll("[data-reset]").forEach(b=>b.onclick=()=>{const a=b.dataset.reset;if(a==="yes"){ORD[sel].forEach(x=>done.delete(x));save();draw();chips()}confirmReset=a==="ask";detail()});
 }
-function setSel(g){sel=g;pick=null;hidePop();vb=g?groupVB(g):FULL.slice();
+function setSel(g){sel=g;pick=null;confirmReset=false;hidePop();vb=g?groupVB(g):FULL.slice();
   try{history.replaceState(null,"",g?"#g"+g:location.pathname+location.search)}catch(e){}
   draw();chips();detail()}
 function hidePop(){pop.hidden=true;pop.innerHTML=""}
@@ -161,7 +209,10 @@ function showPop(d){
   pop.style.setProperty("--c",g?COL[g-1]:"var(--muted)");
   pop.innerHTML=`<button class="x" type="button" aria-label="關閉">×</button><h3>${d[1]||"未知樹種"}</h3>
   <div class="meta"><b>${g?"第 "+g+" 組":"不量測"}</b>　${ZN[d[3]]}・${d[2]}型・編號 ${d[0]}</div><div class="photos"></div>
+  ${g?`<div class="acts"><button class="ck" type="button" data-pk="${d[0]}" aria-pressed="${done.has(d[0])}">${done.has(d[0])?"已量 ✓":"量完"}</button><button class="lnk" type="button" data-cp="${d[0]}">複製樹號</button><span class="ord">本組第 ${IX[d[0]]} / ${ORD[g].length} 棵</span></div>`:""}
   <a href="https://edutreemap.moe.edu.tw/trees/#/Map?no=${d[0]}" target="_blank" rel="noopener">在平臺查看這棵樹 ↗</a>`;
+  const pk=pop.querySelector("[data-pk]");if(pk)pk.onclick=e=>{e.stopPropagation();toggle(d[0])};
+  const cp=pop.querySelector("[data-cp]");if(cp)cp.onclick=async e=>{e.stopPropagation();try{await navigator.clipboard.writeText(String(d[0]));cp.textContent="已複製"}catch(err){cp.textContent="樹號 "+d[0]}};
   pop.querySelector(".x").onclick=e=>{e.stopPropagation();pick=null;hidePop();draw()};
   const ph=pop.querySelector(".photos");let failed=0;
   urls.forEach((u,i)=>{const a=document.createElement("a");a.href=u;a.target="_blank";a.rel="noopener";const im=new Image();im.alt=(d[1]||"樹木")+" 照片";im.src=u;
@@ -172,7 +223,7 @@ function showPop(d){
 }
 svg.addEventListener("click",e=>{const m=svg.getScreenCTM();if(!m)return;const p=new DOMPoint(e.clientX,e.clientY).matrixTransform(m.inverse());
   const tol=(18*vb[2]/FULL[2])**2*1.0;let best=null,bd=Math.max(tol,60);D.forEach(d=>{const dd=(d[4]-p.x)**2+(d[5]-p.y)**2;if(dd<bd){bd=dd;best=d}});
-  if(best){pick=best[0];draw();showPop(best)}else{pick=null;hidePop();draw()}});
+  if(best){pick=best[0];draw();detail();showPop(best)}else{pick=null;hidePop();draw();detail()}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!pop.hidden){pick=null;hidePop();draw()}});
 window.addEventListener("resize",()=>{const d=D.find(x=>x[0]===pick);if(d)placePop(d)});
 window.addEventListener("hashchange",()=>{const m=/^#g([1-9])$/.exec(location.hash);setSel(m?+m[1]:0)});
