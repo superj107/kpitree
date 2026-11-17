@@ -104,7 +104,7 @@ h1{font-size:1.4rem;margin:0 0 10px;text-wrap:balance}
   <div class="grid">
     <div class="mapbox" id="mapbox">
       <svg id="svg" viewBox="-40 -230 1060 1340" role="img" aria-label="各組量測樹點分布圖"></svg>
-      <div class="legend"><span><svg width="8" height="8"><circle cx="4" cy="4" r="2.5" fill="currentColor"/></svg>小型</span><span><svg width="12" height="12"><circle cx="6" cy="6" r="4" fill="currentColor"/></svg>中型</span><span><svg width="14" height="14"><circle cx="7" cy="7" r="6" fill="currentColor"/></svg>大型</span><span><span class="sw" style="background:var(--skip)"></span>不量測</span><span>底圖 © OpenStreetMap contributors</span></div>
+      <div class="legend"><span><svg width="8" height="8"><circle cx="4" cy="4" r="2.5" fill="currentColor"/></svg>小型</span><span><svg width="12" height="12"><circle cx="6" cy="6" r="4" fill="currentColor"/></svg>中型</span><span><svg width="14" height="14"><circle cx="7" cy="7" r="6" fill="currentColor"/></svg>大型</span><button class="lnk" type="button" id="legSkip" style="color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:6px"><span class="sw" style="background:var(--skip)"></span>不量測（點此查詢）</button><span>底圖 © OpenStreetMap contributors</span></div>
       <div class="pop" id="pop" hidden></div>
     </div>
     <aside class="side">
@@ -139,13 +139,14 @@ const KEY="kpitree-done-v1";
 let done=new Set(),confirmReset=false;
 try{done=new Set(JSON.parse(localStorage.getItem(KEY)||"[]"))}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify([...done]))}catch(e){}}
+const SKIP=-1,gv=s=>s===SKIP?0:s;
 function cnt(g){return ORD[g].filter(n=>done.has(n)).length}
 function toggle(no){done.has(no)?done.delete(no):done.add(no);save();draw();chips();detail();const d=D.find(x=>x[0]===pick);if(d&&!pop.hidden)showPop(d)}
 let sel=0,pick=null,vb=FULL.slice();
 const svg=document.getElementById("svg"),box=document.getElementById("mapbox"),pop=document.getElementById("pop"),NS="http://www.w3.org/2000/svg";
 function el(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e}
 function groupVB(g){
-  const p=D.filter(d=>d[GI]===g);let x0=Math.min(...p.map(d=>d[4]))-70,x1=Math.max(...p.map(d=>d[4]))+70,y0=Math.min(...p.map(d=>d[5]))-70,y1=Math.max(...p.map(d=>d[5]))+70;
+  const p=D.filter(d=>d[GI]===gv(g));let x0=Math.min(...p.map(d=>d[4]))-70,x1=Math.max(...p.map(d=>d[4]))+70,y0=Math.min(...p.map(d=>d[5]))-70,y1=Math.max(...p.map(d=>d[5]))+70;
   const asp=FULL[2]/FULL[3];let w=Math.max(x1-x0,640),h=Math.max(y1-y0,640/asp);
   if(w/h>asp)h=w/asp;else w=h*asp;const cx=(x0+x1)/2,cy=(y0+y1)/2;return [cx-w/2,cy-h/2,w,h];
 }
@@ -154,10 +155,10 @@ function draw(){
   const k=Math.max(.55,Math.sqrt(vb[2]/FULL[2]));
   svg.innerHTML=BASE;
   for(let q=1;q<=9;q++)svg.appendChild(el("path",{d:HULL[q],fill:sel===q?"#e63946":"none","fill-opacity":.07,stroke:sel===q?"#e63946":"#b9b1a0","stroke-width":(sel===q?4:1.6)*k,"stroke-dasharray":sel===q?"":`${6*k} ${5*k}`}));
-  if(sel){const P=ORD[sel].map(n=>D.find(d=>d[0]===n));svg.appendChild(el("polyline",{points:P.map(d=>d[4]+","+d[5]).join(" "),fill:"none",stroke:COL[sel-1],"stroke-width":1.6*k,"stroke-opacity":.55,"stroke-dasharray":`${4*k} ${3*k}`}))}
-  D.forEach(d=>{const g=d[GI],dn=done.has(d[0]),fade=sel&&g!==sel;const c=g?COL[g-1]:"#a9b0a6";
-    svg.appendChild(el("circle",{cx:d[4],cy:d[5],r:R[d[2]]*k,fill:dn?"#ffffff":c,"fill-opacity":fade?.28:.95,stroke:dn?c:"#fff","stroke-width":(dn?2.2:.9)*k,"stroke-opacity":fade?.35:1}))});
-  if(sel)ORD[sel].forEach((n,i)=>{const d=D.find(x=>x[0]===n);const tx=el("text",{x:d[4]+R[d[2]]*k+2*k,y:d[5]-R[d[2]]*k+2*k,"font-size":11*k,"font-weight":700,fill:done.has(n)?"#8a9187":COL[sel-1],stroke:"#fff","stroke-width":3*k,"paint-order":"stroke","font-family":"IBM Plex Mono,monospace"});tx.textContent=i+1;svg.appendChild(tx)});
+  if(sel>0){const P=ORD[sel].map(n=>D.find(d=>d[0]===n));svg.appendChild(el("polyline",{points:P.map(d=>d[4]+","+d[5]).join(" "),fill:"none",stroke:COL[sel-1],"stroke-width":1.6*k,"stroke-opacity":.55,"stroke-dasharray":`${4*k} ${3*k}`}))}
+  D.forEach(d=>{const g=d[GI],dn=done.has(d[0]),fade=sel&&g!==gv(sel);const c=g?COL[g-1]:"#a9b0a6";
+    svg.appendChild(el("circle",{cx:d[4],cy:d[5],r:R[d[2]]*k,fill:dn?"#ffffff":c,"fill-opacity":fade?.28:.95,stroke:dn?c:(sel===SKIP&&!g?"#5f6d5c":"#fff"),"stroke-width":(dn?2.2:sel===SKIP&&!g?1.8:.9)*k,"stroke-opacity":fade?.35:1}))});
+  if(sel>0)ORD[sel].forEach((n,i)=>{const d=D.find(x=>x[0]===n);const tx=el("text",{x:d[4]+R[d[2]]*k+2*k,y:d[5]-R[d[2]]*k+2*k,"font-size":11*k,"font-weight":700,fill:done.has(n)?"#8a9187":COL[sel-1],stroke:"#fff","stroke-width":3*k,"paint-order":"stroke","font-family":"IBM Plex Mono,monospace"});tx.textContent=i+1;svg.appendChild(tx)});
   const pd=D.find(x=>x[0]===pick);
   if(pd)svg.appendChild(el("circle",{cx:pd[4],cy:pd[5],r:R[pd[2]]*k+5*k,fill:"none",stroke:"#1f2a1f","stroke-width":2.6*k}));
   for(let g=1;g<=9;g++){if(sel)continue;const p=D.filter(d=>d[GI]===g);const lab=g===9&&!sel?[430,700]:[p.reduce((a,d)=>a+d[4],0)/p.length,p.reduce((a,d)=>a+d[5],0)/p.length];
@@ -166,16 +167,25 @@ function draw(){
 function chips(){
   const c=document.getElementById("chips");c.innerHTML="";
   const mk=(g,label)=>{const b=document.createElement("button");b.className="chip";b.type="button";b.setAttribute("aria-pressed",String(sel===g));
-    b.style.setProperty("--c",g?COL[g-1]:"var(--accent)");const tot=g?ORD[g].length:Object.values(ORD).reduce((a,o)=>a+o.length,0),dn=g?cnt(g):Object.keys(ORD).reduce((a,x)=>a+cnt(x),0);
-    b.innerHTML=`<span class="lb">${g?`<span class="dot" style="background:${COL[g-1]}"></span>`:""}${label}</span><span class="pg">${dn}/${tot}</span>`;
+    b.style.setProperty("--c",g===SKIP?"#8a9187":g?COL[g-1]:"var(--accent)");const tot=g===SKIP?D.filter(d=>!d[GI]).length:g?ORD[g].length:Object.values(ORD).reduce((a,o)=>a+o.length,0),dn=g===SKIP?null:g?cnt(g):Object.keys(ORD).reduce((a,x)=>a+cnt(x),0);
+    b.innerHTML=`<span class="lb">${g?`<span class="dot" style="background:${g===SKIP?"#a9b0a6":COL[g-1]}"></span>`:""}${label}</span><span class="pg">${dn===null?tot+" 棵":dn+"/"+tot}</span>`;
     b.onclick=()=>{setSel(sel===g?0:g)};c.appendChild(b)};
-  mk(0,"全部");for(let g=1;g<=9;g++)mk(g,g+" 組");
+  mk(0,"全部");for(let g=1;g<=9;g++)mk(g,g+" 組");mk(SKIP,"不量測");
 }
 function detail(){
   const el2=document.getElementById("detail");
   if(!sel){el2.style.removeProperty("--c");const all=Object.values(ORD).reduce((a,o)=>a+o.length,0),dn=Object.keys(ORD).reduce((a,x)=>a+cnt(x),0);
-    el2.innerHTML=`<p class="hint">點上方組別，地圖會放大到該組範圍，列出該組的樹號清單與建議行走順序。<br>點地圖上的樹點，照片會直接出現在樹旁。</p>
+    el2.innerHTML=`<p class="hint">點上方組別，地圖會放大到該組範圍，列出該組的樹號清單與建議行走順序；點「不量測」可查詢灰色 11 棵。<br>點地圖上的樹點，照片會直接出現在樹旁。</p>
     <div class="prog"><span>這支手機已勾選</span><b>${dn} / ${all}</b></div><div class="bar"><i style="width:${all?dn/all*100:0}%"></i></div>`;return}
+  if(sel===SKIP){const p=D.filter(d=>!d[GI]),c={};p.forEach(d=>c[d[1]]=(c[d[1]]||0)+1);const n=s=>p.filter(d=>d[2]===s).length;
+    el2.style.setProperty("--c","#8a9187");
+    el2.innerHTML=`<div class="gt"><b>不量測</b><span class="area">灰色樹點，本次不需量測</span></div>
+    <div class="cnt">${p.length} 棵｜大 ${n("大")}・中 ${n("中")}・小 ${n("小")}</div>
+    <div class="tags">${Object.entries(c).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span>${k} ${v}</span>`).join("")}</div>
+    <p class="hint">位置在校園東側（第 6 組區域旁），現場遇到這些樹號請略過，不用填報。</p>
+    <ol class="trees" aria-label="不量測樹木清單">${p.map((d,i)=>`<li class="${d[0]===pick?"on":""}"><span class="ix">${i+1}</span>
+    <button class="tb" type="button" data-show="${d[0]}"><span class="no">${d[0]}</span><span class="sp">${d[1]||"未知樹種"}</span><span class="sz">${d[2]}型</span></button><span></span></li>`).join("")}</ol>`;
+    el2.querySelectorAll("[data-show]").forEach(b=>b.onclick=()=>{const d=D.find(x=>x[0]===+b.dataset.show);pick=d[0];draw();detail();showPop(d)});return}
   const p=D.filter(d=>d[GI]===sel),c={};p.forEach(d=>c[d[1]||"未知樹種"]=(c[d[1]||"未知樹種"]||0)+1);
   const n=s=>p.filter(d=>d[2]===s).length,dn=cnt(sel),tot=ORD[sel].length,nx=ORD[sel].find(x=>!done.has(x));
   el2.style.setProperty("--c",COL[sel-1]);
@@ -193,7 +203,7 @@ function detail(){
   el2.querySelectorAll("[data-reset]").forEach(b=>b.onclick=()=>{const a=b.dataset.reset;if(a==="yes"){ORD[sel].forEach(x=>done.delete(x));save();draw();chips()}confirmReset=a==="ask";detail()});
 }
 function setSel(g){sel=g;pick=null;confirmReset=false;hidePop();vb=g?groupVB(g):FULL.slice();
-  try{history.replaceState(null,"",g?"#g"+g:location.pathname+location.search)}catch(e){}
+  try{history.replaceState(null,"",g===SKIP?"#skip":g?"#g"+g:location.pathname+location.search)}catch(e){}
   draw();chips();detail()}
 function hidePop(){pop.hidden=true;pop.innerHTML=""}
 function placePop(d){
@@ -226,6 +236,8 @@ svg.addEventListener("click",e=>{const m=svg.getScreenCTM();if(!m)return;const p
   if(best){pick=best[0];draw();detail();showPop(best)}else{pick=null;hidePop();draw();detail()}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!pop.hidden){pick=null;hidePop();draw()}});
 window.addEventListener("resize",()=>{const d=D.find(x=>x[0]===pick);if(d)placePop(d)});
-window.addEventListener("hashchange",()=>{const m=/^#g([1-9])$/.exec(location.hash);setSel(m?+m[1]:0)});
-{const m=/^#g([1-9])$/.exec(location.hash);setSel(m?+m[1]:0)}
+const fromHash=()=>{if(location.hash==="#skip")return SKIP;const m=/^#g([1-9])$/.exec(location.hash);return m?+m[1]:0};
+window.addEventListener("hashchange",()=>setSel(fromHash()));
+setSel(fromHash());
+document.getElementById("legSkip").onclick=()=>setSel(sel===SKIP?0:SKIP);
 </script>
